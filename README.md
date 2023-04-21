@@ -2,52 +2,93 @@
 
 This project demonstrates how we can use docker-compose with pytest to run an integration test suite for Airflow DAGs.
 
-## Setting up
+## Background
 
-This project uses a `.envrc` file to set up the necessary environment variables used for the integration test.
+This is based on a heavily modified version of this useful article
+[Airflow Integration Testing using Docker Compose](https://selectfrom.dev/airflow-integration-testing-d7bfa510f8f0)
 
-To begin, make a copy of the `.envrc.template` file and named the copy as `.envrc`:
+also I have thrown in the mix parts of the circle of ideas outlined here:
 
-```sh
-cp .envrc.template .envrc
+[My Medium article](https://medium.com/@fithis2001/remarks-on-setting-up-celery-flower-rabbitmq-for-airflow-d8553267110e)
+
+The list of changes follow
+
+1. We use the official docker compose
+2. We add the Mongo db with proper health checks and volumes
+3. We add a jupyter notebook for experimenting with Mongo
+4. Integration testing is done outside of the image
+5. The sample dag also creates documents in the collection
+
+## Highlights
+
+We add an environment variable in docker compose according to [Connections](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html)
+for the mongo hook
+
+```yaml
+AIRFLOW_CONN_MONGO_STORE: 'mongodb://myTester:tester123@mongodb:27017/test?authSource=test'
 ```
 
-Next, replace the variables with value `<SECRET_STRING_TO_BE_FILLED_IN>` with actual value of your choice.
-These secrets are used automatically in the set up by Docker Compose and within the pytest test suites. No secrets are 
-needed to be checked in.
+which is referred by `mongo_store`. We also add a variable for the document collection
 
-## Running the integration tests
+```yaml
+AIRFLOW_VAR_DOCUMENT_COLLECTION: 'mytest_collection'
+```
 
-### Running all integration tests automatically
+called `mytest_collection`.
 
-Use the following command to run all integration tests automatically
+## TODO
 
+Revise makefile
+Testcontainers
+Proper health check of whole deployment
+
+### Running integration tests automatically
+
+Start the deployment
+
+```sh
+docker-compose up
+```
+
+Now time to create our user. Connect to mongo
+
+```sh
+docker exec -it airflow-integration-testing-mongodb-1 mongosh -u root -p example
+```
+
+Use the following admin command in mongo to create the user, taken from [here](https://www.mongodb.com/docs/manual/tutorial/create-users/)
+
+```javascript
+use test
+db.createUser(
+  {
+    user: "myTester",
+    pwd:  passwordPrompt(),   // or cleartext password
+    roles: [ { role: "readWrite", db: "test" },
+             { role: "read", db: "reporting" } ]
+  }
+)
+```
+
+Set as password `tester123`. Exit and you can verify it works if you can connect with
+
+```sh
+docker exec -it airflow-integration-testing-mongodb-1 mongosh --port 27017 -u "myTester" --authenticationDatabase "test" -p
+```
+
+You can also use the notebook of jupyter. Run
+
+```sh 
+docker logs airflow-integration-testing-datascience-notebook-1
+```
+
+to get the token. Just change port 8888 to 8891 and you are good to go.
+
+Now from Airflow [http://localhost:8080](http://localhost:8080) activate you `sample` dag.
+Every 2 minutes it create a document but also for specific documents it marks them as processed. Consult the integration test.
+
+
+Ru your test now.
 ```sh
 make integration_test
 ```
-
-A non-zero exit code from the above command implies that there are failing integration tests.
-
-### Running tests manually (via the test-runner container)
-
-1. Use the following command to start the necessary containers, and have the `test-runner` container ready for manual 
-   inputs
-   ```sh
-   make manual_testing
-   ```
-2. Wait for the good-to-go from test-runner
-   ```sh
-   docker logs test-runner -f
-   ```
-   - If you see this as the last line in the logs, wait a while more:
-     ```
-     🕐       Waiting for Airflow Web server to be ready...
-     ```
-   - Once you see this, we're good to go (`CTRL+C` to exit log-watching mode)
-      ```
-      Airflow Web server is good to go!
-      ```
-4. Open an interactive shell into the `test-runner` container to start inputting your test commands
-   ```sh
-   docker exec -it test-runner bash
-   ```
