@@ -88,7 +88,7 @@ Now from Airflow [http://localhost:8080](http://localhost:8080) activate you `sa
 Every 2 minutes it create a document but also for specific documents it marks them as processed. Consult the integration test.
 
 
-Ru your test now.
+Create a virtual environment (tested with 3.10) and use `requirements-dev.txt`. Run your test now.
 ```sh
 make integration_test
 ```
