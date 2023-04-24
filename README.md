@@ -46,7 +46,7 @@ simpler than a
 make integration_test
 ```
 
-It starts a modified deployment, creates a test user, it runs the test, it deltes the user and kills the deployment.
+It starts a modified deployment, creates a test user, it runs the test, it deletes the user and kills the deployment.
 All automatic through [testcontainers-python](https://github.com/testcontainers/testcontainers-python/).
 
 It is actually an automation of `test_sample_dag.py` as `test_automatically_saple_dag.py`.
