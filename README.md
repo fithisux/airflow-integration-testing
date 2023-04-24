@@ -17,7 +17,8 @@ The list of changes follow
 2. We add the Mongo db with proper health checks and volumes
 3. We add a jupyter notebook for experimenting with Mongo
 4. Integration testing is done outside of the image
-5. The sample dag also creates documents in the collection
+5. The sample dag also creates documents in the collection, currently commented out
+6. Testcontainers execution, no need to run docker compose manually!!!
 
 ## Highlights
 
@@ -36,13 +37,22 @@ AIRFLOW_VAR_DOCUMENT_COLLECTION: 'mytest_collection'
 
 called `mytest_collection`.
 
-## TODO
-
-Revise makefile
-Testcontainers
-Proper health check of whole deployment
-
 ### Running integration tests automatically
+
+Create a virtual environment (tested with 3.10) and use `requirements-dev.txt`. Integration testing cannot be 
+simpler than a
+
+```sh
+make integration_test
+```
+
+It starts a modified deployment, creates a test user, it runs the test, it deltes the user and kills the deployment.
+All automatic through [testcontainers-python](https://github.com/testcontainers/testcontainers-python/).
+
+It is actually an automation of `test_sample_dag.py` as `test_automatically_saple_dag.py`.
+
+
+### Running deployment manually
 
 Start the deployment
 
@@ -50,7 +60,7 @@ Start the deployment
 docker-compose up
 ```
 
-Now time to create our user. Connect to mongo
+Now time to create our user (see docker file for the user). Connect to mongo
 
 ```sh
 docker exec -it airflow-integration-testing-mongodb-1 mongosh -u root -p example
@@ -82,13 +92,13 @@ You can also use the notebook of jupyter. Run
 docker logs airflow-integration-testing-datascience-notebook-1
 ```
 
-to get the token. Just change port 8888 to 8891 and you are good to go.
+to get the token/url. Just change port 8888 to 8891 and you are good to go.
 
 Now from Airflow [http://localhost:8080](http://localhost:8080) activate you `sample` dag.
-Every 2 minutes it create a document but also for specific documents it marks them as processed. Consult the integration test.
 
+Read the corresponding operator. In summary every 2 minutes it checks if a document exists with `{"source": 'some_source'}`
+and marks it as processed. For debugging purposes there is a commented out section that actually creates a document.
+
+You can now run the `test_sample_dag.py` if you like. You need to uncomment the skipping.
 
 Create a virtual environment (tested with 3.10) and use `requirements-dev.txt`. Run your test now.
-```sh
-make integration_test
-```

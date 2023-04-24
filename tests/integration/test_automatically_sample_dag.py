@@ -1,14 +1,27 @@
+from testcontainers.compose import DockerCompose
 from datetime import datetime
 from unittest.mock import ANY
 
-import pytest
+from tests.integration.conftest import TempComposeFile, TempTestingUser
 
 SAMPLE_DAG_ID = "sample"
 
 class TestSampleDag:
-
-    @pytest.mark.skip(reason="assumes a running docker compose")
     def test_happy_path(
+            self,
+            airflow_api,
+            document_store_mongo_collection,
+    ):
+
+       with TempComposeFile():
+           compose = DockerCompose(".", compose_file_name='other_compose.yaml', pull=True)
+           compose.start()
+           compose.wait_for('http://localhost:8080')
+           with TempTestingUser():
+               self.happy_path(airflow_api, document_store_mongo_collection)
+           compose.stop()
+
+    def happy_path(
         self,
         airflow_api,
         document_store_mongo_collection,
