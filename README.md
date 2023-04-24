@@ -13,7 +13,7 @@ also I have thrown in the mix parts of the circle of ideas outlined here:
 
 The list of changes follow
 
-1. We use the official docker compose
+1. We use the [official docker compose](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#fetching-docker-compose-yaml) 
 2. We add the Mongo db with proper health checks and volumes
 3. We add a jupyter notebook for experimenting with Mongo
 4. Integration testing is done outside of the image
