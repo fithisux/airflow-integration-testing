@@ -1,3 +1,3 @@
-FROM apache/airflow:2.5.3
-ADD requirements.txt .
-RUN pip install -r requirements.txt
+FROM apache/airflow:2.6.0-python3.10
+ADD requirements-docker.txt .
+RUN pip install -r requirements-docker.txt

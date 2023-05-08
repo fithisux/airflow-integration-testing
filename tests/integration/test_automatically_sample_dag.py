@@ -16,7 +16,7 @@ class TestSampleDag:
        with TempComposeFile():
            compose = DockerCompose(".", compose_file_name='other_compose.yaml', pull=True)
            compose.start()
-           compose.wait_for('http://localhost:8080')
+           compose.wait_for('http://localhost:8080/health')
            with TempTestingUser():
                self.happy_path(airflow_api, document_store_mongo_collection)
            compose.stop()
