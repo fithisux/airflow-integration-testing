@@ -19,6 +19,7 @@ The list of changes follow
 4. Integration testing is done outside of the image
 5. The sample dag also creates documents in the collection, currently commented out
 6. Testcontainers execution, no need to run docker compose manually!!!
+7. Replace custom triggering code with official airflow client calls in a more robust way. 
 
 ## Highlights
 
@@ -39,7 +40,7 @@ called `mytest_collection`.
 
 ### Running integration tests automatically
 
-Create a virtual environment (tested with 3.10) and use `requirements-dev.txt`. Integration testing cannot be 
+Create a virtual environment (tested with 3.11.3) and use `requirements-dev.txt`. Integration testing cannot be 
 simpler than a
 
 ```sh
@@ -49,7 +50,7 @@ make integration_test
 It starts a modified deployment, creates a test user, it runs the test, it deletes the user and kills the deployment.
 All automatic through [testcontainers-python](https://github.com/testcontainers/testcontainers-python/).
 
-It is actually an automation of `test_sample_dag.py` as `test_automatically_saple_dag.py`.
+It is actually an automation of `test_sample_dag.py` (in the original article) as `test_automatically_saple_dag.py`.
 
 
 ### Running deployment manually
@@ -59,6 +60,9 @@ Start the deployment
 ```sh
 docker-compose up
 ```
+
+If you are interested in making stateful, bring back the commented out volumes for postgres and mongo.
+
 
 Now time to create our user (see docker file for the user). Connect to mongo
 
@@ -98,7 +102,3 @@ Now from Airflow [http://localhost:8080](http://localhost:8080) activate you `sa
 
 Read the corresponding operator. In summary every 2 minutes it checks if a document exists with `{"source": 'some_source'}`
 and marks it as processed. For debugging purposes there is a commented out section that actually creates a document.
-
-You can now run the `test_sample_dag.py` if you like. You need to uncomment the skipping.
-
-Create a virtual environment (tested with 3.10) and use `requirements-dev.txt`. Run your test now.
