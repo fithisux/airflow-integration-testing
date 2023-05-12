@@ -96,7 +96,7 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
 #    volumes:
-#      - postgres-db-volume:/var/lib/postgresql/data
+#      - mine-postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -307,7 +307,7 @@ services:
     ports:
       - "27017:27017"
 #    volumes:
-#      - mongo-db-volume:/data/db
+#      - mine-mongo-db-volume:/data/db
     healthcheck:
       test:
         mongosh --eval 'db.runCommand("ping").ok' --quiet
@@ -331,5 +331,5 @@ services:
   #     CHOWN_HOME_OPTS: -R
 
 volumes:
-  mongo-db-volume:
-  postgres-db-volume:
+  mine-mongo-db-volume:
+  mine-postgres-db-volume:
