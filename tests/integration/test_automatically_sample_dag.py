@@ -1,7 +1,8 @@
 from testcontainers.compose import DockerCompose
 from unittest.mock import ANY
 
-from tests.integration.conftest import TempComposeFile, TempTestingUser, run_dag
+from tests.integration.conftest import TempComposeFile, TempTestingUser
+from tests.integration.dag_trigger import run_dag
 
 SAMPLE_DAG_ID = "sample"
 
