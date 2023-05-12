@@ -315,20 +315,20 @@ services:
       timeout: 5s
       retries: 6
 
-  # datascience-notebook:
-  #   image: jupyter/base-notebook:latest
-  #   volumes:
-  #     - ./ds-work:/home/docker_worker/work
-  #   ports:
-  #     - 8891:8888
-  #   command: "start-notebook.sh"
-  #   user: root
-  #   environment:
-  #     NB_USER: docker_worker
-  #     NB_UID: 1008
-  #     NB_GID: 1011
-  #     CHOWN_HOME: 'yes'
-  #     CHOWN_HOME_OPTS: -R
+#  datascience-notebook:
+#     image: jupyter/base-notebook:latest
+#     volumes:
+#       - ./ds-work:/home/docker_worker/work
+#     ports:
+#       - 8891:8888
+#     command: "start-notebook.sh"
+#     user: root
+#     environment:
+#       NB_USER: docker_worker
+#       NB_UID: 1008
+#       NB_GID: 1011
+#       CHOWN_HOME: 'yes'
+#       CHOWN_HOME_OPTS: -R
 
 volumes:
   mine-mongo-db-volume:
