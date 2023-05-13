@@ -1,6 +1,7 @@
 # Airflow Integration Tests
 
 This project demonstrates how we can use docker-compose with pytest to run an integration test suite for Airflow DAGs.
+There is an article now in Medium detailing also manual tests with Jupyter notebook.
 
 ## Background
 
