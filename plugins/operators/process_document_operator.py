@@ -22,7 +22,7 @@ class ProcessDocumentOperator(BaseOperator):
         # tstamp_name = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         # mongo_hook.insert_one(
         #     mongo_collection=collection_name,
-        #     doc={"source": tstamp_name},
+        #     doc={"tstamper": tstamp_name},
         # )
 
         mongo_hook.update_many(
