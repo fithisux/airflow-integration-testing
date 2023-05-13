@@ -19,14 +19,14 @@ class ProcessDocumentOperator(BaseOperator):
         collection_name = str(Variable.get(DOCUMENT_STORE_COLLECTION_NAME))
         logging.info(f'collection_name is {collection_name}')
 
-        # tstamp_name = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        # mongo_hook.insert_one(
-        #     mongo_collection=collection_name,
-        #     doc={"tstamper": tstamp_name},
-        # )
-
         mongo_hook.update_many(
             mongo_collection=collection_name,
             filter_doc={"source": 'some_source'},
             update_doc={"$set": {"processed": True}},
         )
+
+        # tstamp_name = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        # mongo_hook.insert_one(
+        #     mongo_collection=collection_name,
+        #     doc={"tstamper": tstamp_name},
+        # )
