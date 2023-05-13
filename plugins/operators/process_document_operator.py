@@ -15,12 +15,11 @@ class ProcessDocumentOperator(BaseOperator):
 
     def execute(self, context: Context):
         mongo_hook = MongoHook(conn_id=self.document_store_connection_id)
-        #source_name = context["dag_run"].conf["source_name"]
 
-        tstamp_name = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         collection_name = str(Variable.get(DOCUMENT_STORE_COLLECTION_NAME))
         logging.info(f'collection_name is {collection_name}')
 
+        # tstamp_name = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         # mongo_hook.insert_one(
         #     mongo_collection=collection_name,
         #     doc={"source": tstamp_name},
