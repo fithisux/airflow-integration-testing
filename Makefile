@@ -11,4 +11,4 @@ build-image:
 integration-test: build-image
 	rm -rf logs
 	# pytest -vvv -s --log-cli-level=DEBUG tests/integration
-	pytest -vvv -s --log-cli-level=DEBUG tests/integration
+	pytest -v -s tests/integration
